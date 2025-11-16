@@ -1,0 +1,29 @@
+---
+# Container
+minecraft_image: itzg/minecraft-server:latest
+minecraft_version: LATEST
+
+# Network
+minecraft_port: 25565
+minecraft_server_ip: ""
+
+# Server settings
+minecraft_server_name: "My Minecraft Server"
+minecraft_motd: "A Minecraft Server"
+minecraft_max_players: 20
+minecraft_difficulty: hard
+minecraft_gamemode: survival
+minecraft_view_distance: 10
+minecraft_simulation_distance: 10
+minecraft_whitelist: false
+minecraft_enforce_whitelist: false
+
+# Java/Memory
+minecraft_memory_max: 2g
+minecraft_memory_min: 1g
+minecraft_java_opts: "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200"
+
+# Paths
+minecraft_data_dir: /opt/minecraft
+minecraft_user: minecraft
+minecraft_group: minecraft

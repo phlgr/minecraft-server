@@ -1,0 +1,38 @@
+# Git Ignore File
+# ===============
+# This file tells Git which files and directories to ignore
+# Files listed here won't be tracked by Git (useful for sensitive data, temporary files, etc.)
+
+# Inventory files with real server information
+# Keep example inventory files, but ignore ones with actual IPs/passwords
+inventory/hosts.yml
+inventory/*.yml
+!inventory/hosts.yml.example
+
+# Ansible vault files (encrypted secrets)
+*.vault
+*.vault.yml
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*~
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+
+# Python cache (if using Python modules)
+__pycache__/
+*.pyc
+*.pyo
+
+# Ansible retry files
+*.retry
+
+# Backup files
+*.bak
+*.backup
+

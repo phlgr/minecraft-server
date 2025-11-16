@@ -1,0 +1,114 @@
+---
+- name: Install Docker dependencies
+  tags: docker
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Add Docker GPG key
+  tags: docker
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  become: true
+
+- name: Add Docker repository
+  tags: docker
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+  become: true
+
+- name: Install Docker packages
+  tags: docker
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+      - python3-docker
+    state: present
+  become: true
+
+- name: Start and enable Docker service
+  tags: docker
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
+- name: Create Minecraft group
+  ansible.builtin.group:
+    name: "{{ minecraft_group }}"
+    state: present
+  become: true
+
+- name: Create Minecraft user
+  ansible.builtin.user:
+    name: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    groups: docker
+    shell: /bin/bash
+    create_home: true
+    append: true
+  become: true
+
+- name: Create Minecraft data directory
+  ansible.builtin.file:
+    path: "{{ minecraft_data_dir }}"
+    state: directory
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    mode: '0755'
+  become: true
+
+- name: Generate server.properties
+  tags: config
+  ansible.builtin.template:
+    src: server.properties.j2
+    dest: "{{ minecraft_data_dir }}/server.properties"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    mode: '0644'
+  become: true
+  notify: restart minecraft
+
+- name: Generate eula.txt
+  tags: config
+  ansible.builtin.template:
+    src: eula.txt
+    dest: "{{ minecraft_data_dir }}/eula.txt"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    mode: '0644'
+  become: true
+
+- name: Generate docker-compose.yml
+  tags: config
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ minecraft_data_dir }}/docker-compose.yml"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    mode: '0644'
+  become: true
+  notify: recreate minecraft
+
+- name: Start Minecraft container
+  tags: container
+  community.docker.docker_compose_v2:
+    project_src: "{{ minecraft_data_dir }}"
+    state: present
+    pull: always
+  become: true
+  become_user: "{{ minecraft_user }}"
