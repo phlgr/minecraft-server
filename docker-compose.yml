@@ -1,0 +1,23 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft-server
+    restart: unless-stopped
+    ports:
+      - "${MINECRAFT_PORT:-25565}:25565"
+    volumes:
+      - ./data:/data
+    environment:
+      EULA: "TRUE"
+      TYPE: "${MINECRAFT_TYPE:-PURPUR}"
+      VERSION: "${MINECRAFT_VERSION:-LATEST}"
+      MEMORY: "${MINECRAFT_MEMORY:-2G}"
+      DIFFICULTY: "${MINECRAFT_DIFFICULTY:-hard}"
+      GAMEMODE: "${MINECRAFT_GAMEMODE:-survival}"
+      MAX_PLAYERS: "${MINECRAFT_MAX_PLAYERS:-20}"
+      MOTD: "${MINECRAFT_MOTD:-A Minecraft Server}"
+      WHITELIST: "${MINECRAFT_WHITELIST:-false}"
+      ENFORCE_WHITELIST: "${MINECRAFT_ENFORCE_WHITELIST:-false}"
+      VIEW_DISTANCE: "${MINECRAFT_VIEW_DISTANCE:-10}"
+      SIMULATION_DISTANCE: "${MINECRAFT_SIMULATION_DISTANCE:-10}"
+      JVM_XX_OPTS: "${MINECRAFT_JVM_OPTS:--XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200}"

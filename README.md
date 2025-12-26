@@ -1,63 +1,117 @@
-# Purpur Minecraft Server - Ansible Deployment
+# Minecraft Server (Docker Compose)
 
-Deploy a Purpur Minecraft server on Ubuntu/Debian using Ansible and Docker.
+A simple Docker Compose setup for running a Purpur Minecraft server for a small private SMP (~10 players).
 
 ## Prerequisites
 
-- Ansible installed
-- SSH access to target server (Ubuntu/Debian)
-- `community.docker` collection: `ansible-galaxy collection install -r requirements.yml`
+- Docker and Docker Compose installed
+- Git
 
 ## Quick Start
 
-1. **Configure inventory** (`inventory/hosts.yml`):
-```yaml
----
-minecraft_servers:
-  hosts:
-    minecraft-server-1:
-      ansible_host: YOUR_SERVER_IP
-      ansible_user: ubuntu
-      ansible_port: 22
-```
-
-2. **Configure variables** (optional) - edit `roles/minecraft_server/defaults/main.yml`:
-```yaml
-minecraft_port: 25565
-minecraft_max_players: 20
-minecraft_memory_max: 2g
-minecraft_difficulty: hard
-```
-
-3. **Run playbook**:
 ```bash
-ansible-playbook playbook.yml
+# Clone this repository
+git clone <your-repo-url> minecraft-server
+cd minecraft-server
+
+# Copy environment file and customize
+cp .env.example .env
+
+# Edit .env to configure your server (optional)
+nano .env
+
+# Start the server
+docker compose up -d
+
+# View logs
+docker compose logs -f minecraft
 ```
 
 ## Configuration
 
-Edit `roles/minecraft_server/defaults/main.yml` to customize:
-- Server settings (port, max players, difficulty, gamemode)
-- Memory allocation (`minecraft_memory_max`, `minecraft_memory_min`)
-- Java options (`minecraft_java_opts`)
-- Data directory (`minecraft_data_dir`)
+### Environment Variables (.env)
 
-## Usage
+Edit `.env` to customize:
+
+- `MINECRAFT_TYPE` - Server type (PURPUR, VANILLA, PAPER, etc.)
+- `MINECRAFT_VERSION` - Minecraft version or LATEST
+- `MINECRAFT_PORT` - Server port (default: 25565)
+- `MINECRAFT_MEMORY` - Max memory allocation (default: 2G)
+- `MINECRAFT_DIFFICULTY` - peacefuleasy, normal, hard
+- `MINECRAFT_GAMEMODE` - survival, creative, adventure, spectator
+- `MINECRAFT_MAX_PLAYERS` - Maximum players (default: 20)
+- `MINECRAFT_MOTD` - Server message of the day
+
+### Server Configuration Files
+
+Edit files in `data/` to customize Minecraft settings:
+
+- `data/server.properties` - Main server configuration
+- `data/ops.json` - Operators/admins
+- `data/whitelist.json` - Whitelisted players
+
+## Managing the Server
 
 ```bash
-# Test connection
-ansible all -i inventory/hosts.yml -m ping
+# Start
+docker compose up -d
 
-# Run playbook
-ansible-playbook playbook.yml
+# Stop
+docker compose stop
 
-# Run with tags
-ansible-playbook playbook.yml --tags config,container
+# Restart
+docker compose restart
 
-# Check mode
-ansible-playbook playbook.yml --check
+# View logs
+docker compose logs -f minecraft
 
-# Stop container
-ansible all -i inventory/hosts.yml -m shell -a "docker stop minecraft-server" -b
+# Execute commands in server
+docker compose exec minecraft rcon <command>
+```
+
+## Disaster Recovery
+
+If the server or data is lost:
+
+```bash
+# Clone the repository
+git clone <your-repo-url> minecraft-server
+cd minecraft-server
+
+# Restore from backup (if you have one)
+# Or start fresh with your saved configs
+
+# Start the server
+docker compose up -d
+```
+
+**Important**: This Git repository tracks only configuration files, not world data. To protect your world, regularly backup `data/world/`, `data/world_nether/`, and `data/world_the_end/`.
+
+## Backup Strategy
+
+```bash
+# Backup world data (run periodically)
+tar -czf minecraft-backup-$(date +%Y%m%d).tar.gz data/world/ data/world_nether/ data/world_the_end/
+```
+
+## Adding Plugins
+
+Create `plugins.txt` (one URL per line) to download plugins automatically on first run:
 
 ```
+https://example.com/plugin1.jar
+https://example.com/plugin2.jar
+```
+
+Place plugin configs in `data/plugin-configs/` for reference.
+
+## Troubleshooting
+
+- Server won't start? Check logs: `docker compose logs minecraft`
+- Players can't connect? Check firewall rules and port forwarding
+- High memory usage? Adjust `MINECRAFT_MEMORY` in `.env`
+
+## Resources
+
+- [itzg/minecraft-server Docker Image](https://hub.docker.com/r/itzg/minecraft-server)
+- [Purpur Documentation](https://purpurmc.org/docs)

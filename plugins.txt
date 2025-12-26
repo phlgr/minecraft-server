@@ -1,0 +1,5 @@
+# Add plugin download URLs here (one per line)
+# Example:
+# https://github.com/ExamplePlugin/ExamplePlugin/releases/download/v1.0.0/example-plugin.jar
+#
+# The server will automatically download these plugins on first run
