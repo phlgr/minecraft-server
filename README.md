@@ -48,17 +48,6 @@ Edit files in `data/` to customize Minecraft settings:
 
 **Important**: After editing configuration files, restart the server: `docker compose restart`
 
-### Configuration Patches
-
-The `patches/` directory contains JSON patch definitions that automatically modify generated configuration files. For example, `patches/paper-global.json` enables piston duplication and other exploits.
-
-To create a new patch:
-1. Add a JSON file to `patches/`
-2. Use JSONPath syntax to target file values
-3. Restart the server: `docker compose restart`
-
-See [itzg/minecraft-server patch documentation](https://github.com/itzg/docker-minecraft-server#patching-existing-files) for details.
-
 ## Managing the Server
 
 ```bash
@@ -110,10 +99,8 @@ Add plugin download URLs to `.env`:
 
 ```bash
 # Edit .env
-MINECRAFT_PLUGINS="https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar|https://download.luckperms.net/1544/bukkit/loader/LuckPerms-Bukkit-5.4.102.jar"
+MINECRAFT_PLUGINS=""
 ```
-
-Separate multiple plugins with `|`.
 
 ### Plugin Updates
 

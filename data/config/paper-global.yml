@@ -1,0 +1,4 @@
+unsupported-settings:
+  allow-headless-pistons: true
+  allow-permanent-block-break-exploits: true
+  allow-piston-duplication: true
