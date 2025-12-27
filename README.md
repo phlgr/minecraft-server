@@ -66,7 +66,13 @@ docker compose restart
 docker compose logs -f minecraft
 
 # Execute commands in server
-docker compose exec minecraft rcon <command>
+docker compose exec minecraft rcon-cli list
+
+# Interactive RCON session
+docker compose exec -it minecraft rcon-cli
+
+# Send command to console
+docker compose exec minecraft mc-send-to-console say Hello
 ```
 
 ## Disaster Recovery
@@ -96,14 +102,27 @@ tar -czf minecraft-backup-$(date +%Y%m%d).tar.gz data/world/ data/world_nether/ 
 
 ## Adding Plugins
 
-Create `plugins.txt` (one URL per line) to download plugins automatically on first run:
+Plugins are automatically downloaded from URLs on container start.
 
-```
-https://example.com/plugin1.jar
-https://example.com/plugin2.jar
+Add plugin download URLs to `.env`:
+
+```bash
+# Edit .env
+MINECRAFT_PLUGINS="https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar|https://download.luckperms.net/1544/bukkit/loader/LuckPerms-Bukkit-5.4.102.jar"
 ```
 
-Place plugin configs in `data/plugin-configs/` for reference.
+Separate multiple plugins with `|`.
+
+### Plugin Updates
+
+To update plugins:
+1. Update the URLs in `.env`
+2. Restart: `docker compose restart`
+3. Plugins will auto-download (old plugins removed if `MINECRAFT_REMOVE_OLD_PLUGINS=true`)
+
+### Plugin Configuration
+
+Configs are auto-generated in `data/plugins/` after first run. Track reference configs in `data/plugin-configs/`.
 
 ## Troubleshooting
 
