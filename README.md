@@ -1,6 +1,6 @@
 # Minecraft Server (Docker Compose)
 
-A simple Docker Compose setup for running a Purpur Minecraft server for a small private SMP (~10 players).
+A simple Docker Compose setup for running a Paper Minecraft server for a small private SMP (~10 players).
 
 ## Prerequisites
 
@@ -33,10 +33,12 @@ docker compose logs -f minecraft
 
 Edit `.env` to customize:
 
-- `MINECRAFT_TYPE` - Server type (PURPUR, VANILLA, PAPER, etc.)
+- `MINECRAFT_TYPE` - Server type (PAPER, VANILLA, PURPUR, etc.)
 - `MINECRAFT_VERSION` - Minecraft version or LATEST
 - `MINECRAFT_PORT` - Server port (default: 25565)
 - `MINECRAFT_MEMORY` - Max memory allocation (default: 2G)
+- `MINECRAFT_PLUGINS` - Plugins to install (default: none)
+- `MINECRAFT_REMOVE_OLD_MODS` - Remove old mods (default: true)
 
 ### Server Configuration Files
 
@@ -45,6 +47,7 @@ Edit files in `data/` to customize Minecraft settings:
 - `data/server.properties` - Main server configuration (difficulty, gamemode, max players, MOTD, etc.)
 - `data/ops.json` - Operators/admins
 - `data/whitelist.json` - Whitelisted players
+- `data/config/paper-global.yml` - Paper global configuration
 
 **Important**: After editing configuration files, restart the server: `docker compose restart`
 
@@ -98,8 +101,8 @@ Plugins are automatically downloaded from URLs on container start.
 Add plugin download URLs to `.env`:
 
 ```bash
-# Edit .env
-MINECRAFT_PLUGINS=""
+# Edit .env - add plugin URLs separated by ,
+MINECRAFT_PLUGINS="https://example.com/plugin1.jar,https://example.com/plugin2.jar"
 ```
 
 ### Plugin Updates
@@ -107,11 +110,8 @@ MINECRAFT_PLUGINS=""
 To update plugins:
 1. Update the URLs in `.env`
 2. Restart: `docker compose restart`
-3. Plugins will auto-download (old plugins removed if `MINECRAFT_REMOVE_OLD_PLUGINS=true`)
+3. Plugins will auto-download (old plugins removed if `MINECRAFT_REMOVE_OLD_MODS=true`)
 
-### Plugin Configuration
-
-Configs are auto-generated in `data/plugins/` after first run. Track reference configs in `data/plugin-configs/`.
 
 ## Troubleshooting
 
