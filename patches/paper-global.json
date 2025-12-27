@@ -1,0 +1,27 @@
+{
+  "patches": [
+    {
+      "file": "/data/config/paper-global.yml",
+      "ops": [
+        {
+          "$set": {
+            "path": "$.settings['unsupported-settings']['allow-piston-duplication']",
+            "value": true
+          }
+        },
+        {
+          "$set": {
+            "path": "$.settings['unsupported-settings']['allow-permanent-block-break-exploits']",
+            "value": true
+          }
+        },
+        {
+          "$set": {
+            "path": "$.settings['unsupported-settings']['allow-headless-pistons']",
+            "value": true
+          }
+        }
+      ]
+    }
+  ]
+}

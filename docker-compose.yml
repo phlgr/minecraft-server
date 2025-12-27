@@ -5,21 +5,19 @@ services:
     restart: unless-stopped
     ports:
       - "${MINECRAFT_PORT:-25565}:25565"
+      - "${MINECRAFT_RCON_PORT:-25575}:25575"
     volumes:
       - ./data:/data
+      - ./patches:/patches:ro
     environment:
       EULA: "TRUE"
       TYPE: "${MINECRAFT_TYPE:-PURPUR}"
       VERSION: "${MINECRAFT_VERSION:-LATEST}"
       MEMORY: "${MINECRAFT_MEMORY:-2G}"
-      DIFFICULTY: "${MINECRAFT_DIFFICULTY:-hard}"
-      GAMEMODE: "${MINECRAFT_GAMEMODE:-survival}"
-      MAX_PLAYERS: "${MINECRAFT_MAX_PLAYERS:-20}"
-      MOTD: "${MINECRAFT_MOTD:-A Minecraft Server}"
-      WHITELIST: "${MINECRAFT_WHITELIST:-false}"
-      ENFORCE_WHITELIST: "${MINECRAFT_ENFORCE_WHITELIST:-false}"
-      VIEW_DISTANCE: "${MINECRAFT_VIEW_DISTANCE:-10}"
-      SIMULATION_DISTANCE: "${MINECRAFT_SIMULATION_DISTANCE:-10}"
+      ENABLE_RCON: "true"
+      RCON_PORT: "${MINECRAFT_RCON_PORT:-25575}"
+      RCON_PASSWORD: "${MINECRAFT_RCON_PASSWORD:-minecraft}"
       PLUGINS: "${MINECRAFT_PLUGINS:-}"
+      PATCH_DEFINITIONS: "/patches"
       REMOVE_OLD_MODS: "${MINECRAFT_REMOVE_OLD_PLUGINS:-true}"
       JVM_XX_OPTS: "${MINECRAFT_JVM_OPTS:--XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200}"

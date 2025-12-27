@@ -37,18 +37,27 @@ Edit `.env` to customize:
 - `MINECRAFT_VERSION` - Minecraft version or LATEST
 - `MINECRAFT_PORT` - Server port (default: 25565)
 - `MINECRAFT_MEMORY` - Max memory allocation (default: 2G)
-- `MINECRAFT_DIFFICULTY` - peacefuleasy, normal, hard
-- `MINECRAFT_GAMEMODE` - survival, creative, adventure, spectator
-- `MINECRAFT_MAX_PLAYERS` - Maximum players (default: 20)
-- `MINECRAFT_MOTD` - Server message of the day
 
 ### Server Configuration Files
 
 Edit files in `data/` to customize Minecraft settings:
 
-- `data/server.properties` - Main server configuration
+- `data/server.properties` - Main server configuration (difficulty, gamemode, max players, MOTD, etc.)
 - `data/ops.json` - Operators/admins
 - `data/whitelist.json` - Whitelisted players
+
+**Important**: After editing configuration files, restart the server: `docker compose restart`
+
+### Configuration Patches
+
+The `patches/` directory contains JSON patch definitions that automatically modify generated configuration files. For example, `patches/paper-global.json` enables piston duplication and other exploits.
+
+To create a new patch:
+1. Add a JSON file to `patches/`
+2. Use JSONPath syntax to target file values
+3. Restart the server: `docker compose restart`
+
+See [itzg/minecraft-server patch documentation](https://github.com/itzg/docker-minecraft-server#patching-existing-files) for details.
 
 ## Managing the Server
 
@@ -91,14 +100,7 @@ cd minecraft-server
 docker compose up -d
 ```
 
-**Important**: This Git repository tracks only configuration files, not world data. To protect your world, regularly backup `data/world/`, `data/world_nether/`, and `data/world_the_end/`.
-
-## Backup Strategy
-
-```bash
-# Backup world data (run periodically)
-tar -czf minecraft-backup-$(date +%Y%m%d).tar.gz data/world/ data/world_nether/ data/world_the_end/
-```
+**Note**: Server configuration files (server.properties, ops.json, whitelist.json) are tracked in Git, so they will be restored automatically. World data is not tracked and must be backed up separately.
 
 ## Adding Plugins
 
